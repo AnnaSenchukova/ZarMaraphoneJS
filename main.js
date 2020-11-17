@@ -1,5 +1,5 @@
-const firstRow = 'мама мыла раму';
-const secondRow = 'собака друг человека';
+const firstRow = prompt('Введите первую строку', 'мама мыла раму');
+const secondRow = prompt('Введите вторую строку', 'собака друг человека');
 
 function findLetterCountIn(row, letter) {
     let counter = 0;
@@ -35,4 +35,4 @@ function getRow(firstRow, secondRow) {
     return resultRow;
 }
 
-console.log(getRow(firstRow, secondRow)); // мама мыла раму
+alert(getRow(firstRow, secondRow)); // мама мыла раму

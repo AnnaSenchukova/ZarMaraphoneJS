@@ -21,10 +21,11 @@ function findLetterCountIn(row, letter) {
  */
 function getRow(firstRow, secondRow) {
     let resultRow = '';
-    let searchLetter = 'а';
+    const kiryllicA = 'а';
+    const latinA = 'a';
 
-    let firstRowLetterCount = findLetterCountIn(firstRow, searchLetter);
-    let secondRowLetterCount = findLetterCountIn(secondRow, searchLetter);
+    let firstRowLetterCount = findLetterCountIn(firstRow, kiryllicA) + findLetterCountIn(firstRow, latinA);
+    let secondRowLetterCount = findLetterCountIn(secondRow, kiryllicA) + findLetterCountIn(secondRow, latinA);
 
     if (firstRowLetterCount > secondRowLetterCount) {
         resultRow = firstRow;

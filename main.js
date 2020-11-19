@@ -1,6 +1,18 @@
 const buttonKick = document.getElementById('btn-kick');
 const buttonPunch = document.getElementById('btn-punch');
-let buttonsArray = [buttonKick, buttonPunch];
+
+let buttonsArray = [
+    {
+        name: 'Kick',
+        element: document.getElementById('btn-kick'),
+        damage: 20
+    },
+    {
+        name: 'Punch',
+        element: document.getElementById('btn-punch'),
+        damage: 50
+    },
+];
 
 
 const character = {
@@ -34,16 +46,11 @@ buttonPunch.addEventListener('click', function () {
 function changeHit(buttonsArray) {
     for (let i = 0; i < buttonsArray.length; i++) {
         let button = buttonsArray[i];
-        button.addEventListener('click', function () {
-            if(i === 0) {
-                console.log('Kick');
-                changeHP(random(20), character);
-                changeHP(random(20), enemy);
-            } else {
-                console.log('Punch');
-                changeHP(random(50), character);
-                changeHP(random(50), enemy);
-            }
+
+        button.element.addEventListener('click', function () {
+                console.log(button.name);
+                changeHP(random(button.damage), character);
+                changeHP(random(button.damage), enemy);
         });
     }
 }

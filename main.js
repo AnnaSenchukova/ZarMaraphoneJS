@@ -1,4 +1,6 @@
-const button = document.getElementById('btn-kick');
+const buttonKick = document.getElementById('btn-kick');
+const buttonPunch = document.getElementById('btn-punch');
+
 const character = {
     name: 'Picachu',
     defaultHP: 100,
@@ -15,10 +17,16 @@ const enemy = {
     elProgressbar: document.getElementById('progressbar-enemy'),
 };
 
-button.addEventListener('click', function () {
+buttonKick.addEventListener('click', function () {
     console.log('Kick');
     changeHP(random(20), character);
     changeHP(random(20), enemy);
+});
+
+buttonPunch.addEventListener('click', function () {
+    console.log('Punch');
+    changeHP(random(50), character);
+    changeHP(random(50), enemy);
 });
 
 function renderHP(person) {
@@ -38,7 +46,7 @@ function changeHP(count, person) {
     if(person.damageHP < count) {
         person.damageHP = 0;
         alert('Бедный ' + person.name + ' проиграл бой!');
-        button.disabled = true;
+        buttonKick.disabled = true;
 
     } else {
         person.damageHP -= count;

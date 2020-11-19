@@ -1,39 +1,60 @@
-const firstRow = prompt('Введите первую строку', 'мама мыла раму');
-const secondRow = prompt('Введите вторую строку', 'собака друг человека');
+const button = document.getElementById('btn-kick');
+const character = {
+    name: 'Picachu',
+    defaultHP: 100,
+    damageHP: 100,
+    elHP: document.getElementById('health-character'),
+    elProgressbar: document.getElementById('progressbar-character'),
+};
 
-function findLetterCountIn(row, letter) {
-    let counter = 0;
-    for (let i = 0; i <= row.length; i++) {
-        if (row.charAt(i) === letter) {
-            counter++;
-        }
-    }
-    return counter;
+const enemy = {
+    name: 'Charmander',
+    defaultHP: 100,
+    damageHP: 100,
+    elHP: document.getElementById('health-enemy'),
+    elProgressbar: document.getElementById('progressbar-enemy'),
+};
+
+button.addEventListener('click', function () {
+    console.log('Kick');
+    changeHP(random(20), character);
+    changeHP(random(20), enemy);
+});
+
+function renderHP(person) {
+    renderHPLife(person);
+    renderProgressbarHP(person);
 }
 
-/**
- * функция возвращает ту строку в которой больше искомых букв.
- * если все строки содержат однаковое количество искомых букв возвращается пустая строка.
- *
- * @param firstRow
- * @param secondRow
- * @returns {string}
- */
-function getRow(firstRow, secondRow) {
-    let resultRow = '';
-    const kiryllicA = 'а';
-    const latinA = 'a';
-
-    let firstRowLetterCount = findLetterCountIn(firstRow, kiryllicA) + findLetterCountIn(firstRow, latinA);
-    let secondRowLetterCount = findLetterCountIn(secondRow, kiryllicA) + findLetterCountIn(secondRow, latinA);
-
-    if (firstRowLetterCount > secondRowLetterCount) {
-        resultRow = firstRow;
-    } else if (firstRowLetterCount < secondRowLetterCount) {
-        resultRow = secondRow;
-    }
-
-    return resultRow;
+function renderHPLife(person) {
+    person.elHP.innerText = person.damageHP + ' / ' + person.defaultHP;
 }
 
-alert(getRow(firstRow, secondRow)); // мама мыла раму
+function renderProgressbarHP(person) {
+    person.elProgressbar.style.width = person.damageHP + '%';
+}
+
+function changeHP(count, person) {
+    if(person.damageHP < count) {
+        person.damageHP = 0;
+        alert('Бедный ' + person.name + ' проиграл бой!');
+        button.disabled = true;
+
+    } else {
+        person.damageHP -= count;
+    }
+    renderHP(person);
+}
+
+function random(num) {
+    return Math.ceil(Math.random() * num);
+}
+
+function init() {
+    console.log('Start Came!');
+    renderHP(character);
+    renderHP(enemy);
+}
+
+init();
+

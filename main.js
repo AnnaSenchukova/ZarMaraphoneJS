@@ -62,8 +62,12 @@ function renderHP(person) {
     renderProgressbarHP(person);
 }
 
+function buildRenderHPText(person) {
+    return person.damageHP + ' / ' + person.defaultHP;
+}
+
 function renderHPLife(person) {
-    person.elHP.innerText = person.damageHP + ' / ' + person.defaultHP;
+    person.elHP.innerText = buildRenderHPText(person);
 }
 
 function renderProgressbarHP(person) {
@@ -79,7 +83,7 @@ function changeHP(count) {
     } else {
         this.damageHP -= count;
     }
-    const log = this === enemy ? generateLog(this, character) : generateLog(this, enemy);
+    const log = this === enemy ? generateLog(this, character, count, buildRenderHPText(this)) : generateLog(this, enemy, count, buildRenderHPText(this));
     console.log(log);
     renderHP(this);
 }

@@ -21,6 +21,7 @@ const character = {
     damageHP: 100,
     elHP: document.getElementById('health-character'),
     elProgressbar: document.getElementById('progressbar-character'),
+    changeHP,
 };
 
 const enemy = {
@@ -29,6 +30,7 @@ const enemy = {
     damageHP: 100,
     elHP: document.getElementById('health-enemy'),
     elProgressbar: document.getElementById('progressbar-enemy'),
+    changeHP,
 };
 
 /*buttonKick.addEventListener('click', function () {
@@ -49,8 +51,8 @@ function changeHit(buttonsArray) {
 
         button.element.addEventListener('click', function () {
                 console.log(button.name);
-                changeHP(random(button.damage), character);
-                changeHP(random(button.damage), enemy);
+                character.changeHP(random(button.damage));
+                enemy.changeHP(random(button.damage));
         });
     }
 }
@@ -69,15 +71,15 @@ function renderProgressbarHP(person) {
 }
 
 function changeHP(count, person) {
-    if(person.damageHP < count) {
-        person.damageHP = 0;
-        alert('Бедный ' + person.name + ' проиграл бой!');
+    if(this.damageHP < count) {
+        this.damageHP = 0;
+        alert('Бедный ' + this.name + ' проиграл бой!');
         buttonKick.disabled = true;
 
     } else {
-        person.damageHP -= count;
+        this.damageHP -= count;
     }
-    renderHP(person);
+    renderHP(this);
 }
 
 function random(num) {

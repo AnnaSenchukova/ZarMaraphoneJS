@@ -1,5 +1,8 @@
 const buttonKick = document.getElementById('btn-kick');
 const buttonPunch = document.getElementById('btn-punch');
+const blockLogs = document.querySelector('#logs');
+
+const logs = [];
 
 let buttonsArray = [
     {
@@ -51,6 +54,8 @@ function changeHit(buttonsArray) {
 
         button.element.addEventListener('click', function () {
                 console.log(button.name);
+
+                clearLogs(blockLogs);
                 character.changeHP(random(button.damage));
                 enemy.changeHP(random(button.damage));
         });
@@ -85,6 +90,8 @@ function changeHP(count) {
     }
     const log = this === enemy ? generateLog(this, character, count, buildRenderHPText(this)) : generateLog(this, enemy, count, buildRenderHPText(this));
     console.log(log);
+    logs.push(log);
+    createLogFighting(blockLogs, log);
     renderHP(this);
 }
 

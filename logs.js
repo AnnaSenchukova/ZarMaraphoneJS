@@ -1,5 +1,7 @@
+
+
 function generateLog (firstPerson, secondPerson, damage, HPResult) {
-    const logs = [
+    const phrases = [
         `${firstPerson.name} вспомнил что-то важное, но неожиданно ${secondPerson.name}, не помня себя от испуга, ударил в предплечье врага. Урон -${damage}, [${HPResult}]`,
         `${firstPerson.name} поперхнулся, и за это ${secondPerson.name} с испугу приложил прямой удар коленом в лоб врага. Урон -${damage}, [${HPResult}]`,
         `${firstPerson.name} забылся, но в это время наглый ${secondPerson.name}, приняв волевое решение, неслышно подойдя сзади, ударил. Урон -${damage}, [${HPResult}]`,
@@ -12,5 +14,17 @@ function generateLog (firstPerson, secondPerson, damage, HPResult) {
         `${firstPerson.name}  пытался что-то сказать, но вдруг, неожиданно ${secondPerson.name} со скуки, разбил бровь сопернику. Урон -${damage}, [${HPResult}]`
     ];
 
-    return logs[random(logs.length) - 1];
+    return phrases[random(logs.length) - 1];
+}
+
+function clearLogs(htmlBlock) {
+    while (htmlBlock.firstChild) {
+        htmlBlock.removeChild(htmlBlock.lastChild);
+    }
+}
+
+function createLogFighting(htmlBlock, log) {
+    const logEntry = document.createElement('p');
+    logEntry.innerText = log;
+    htmlBlock.insertBefore(logEntry, htmlBlock.children[0]);
 }

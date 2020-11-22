@@ -70,7 +70,7 @@ function renderProgressbarHP(person) {
     person.elProgressbar.style.width = person.damageHP + '%';
 }
 
-function changeHP(count, person) {
+function changeHP(count) {
     if(this.damageHP < count) {
         this.damageHP = 0;
         alert('Бедный ' + this.name + ' проиграл бой!');
@@ -79,6 +79,8 @@ function changeHP(count, person) {
     } else {
         this.damageHP -= count;
     }
+    const log = this === enemy ? generateLog(this, character) : generateLog(this, enemy);
+    console.log(log);
     renderHP(this);
 }
 

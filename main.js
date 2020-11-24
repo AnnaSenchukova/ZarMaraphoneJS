@@ -1,5 +1,8 @@
 const buttonKick = document.getElementById('btn-kick');
 const buttonPunch = document.getElementById('btn-punch');
+const blockLogs = document.querySelector('#logs');
+
+const logs = [];
 
 let buttonsArray = [
     {
@@ -21,6 +24,7 @@ const character = {
     damageHP: 100,
     elHP: document.getElementById('health-character'),
     elProgressbar: document.getElementById('progressbar-character'),
+    changeHP,
 };
 
 const enemy = {
@@ -29,6 +33,7 @@ const enemy = {
     damageHP: 100,
     elHP: document.getElementById('health-enemy'),
     elProgressbar: document.getElementById('progressbar-enemy'),
+    changeHP,
 };
 
 /*buttonKick.addEventListener('click', function () {
@@ -49,8 +54,10 @@ function changeHit(buttonsArray) {
 
         button.element.addEventListener('click', function () {
                 console.log(button.name);
-                changeHP(random(button.damage), character);
-                changeHP(random(button.damage), enemy);
+
+                clearLogs(blockLogs);
+                character.changeHP(random(button.damage));
+                enemy.changeHP(random(button.damage));
         });
     }
 }
@@ -60,24 +67,32 @@ function renderHP(person) {
     renderProgressbarHP(person);
 }
 
+function buildRenderHPText(person) {
+    return person.damageHP + ' / ' + person.defaultHP;
+}
+
 function renderHPLife(person) {
-    person.elHP.innerText = person.damageHP + ' / ' + person.defaultHP;
+    person.elHP.innerText = buildRenderHPText(person);
 }
 
 function renderProgressbarHP(person) {
     person.elProgressbar.style.width = person.damageHP + '%';
 }
 
-function changeHP(count, person) {
-    if(person.damageHP < count) {
-        person.damageHP = 0;
-        alert('Бедный ' + person.name + ' проиграл бой!');
+function changeHP(count) {
+    if(this.damageHP < count) {
+        this.damageHP = 0;
+        alert('Бедный ' + this.name + ' проиграл бой!');
         buttonKick.disabled = true;
 
     } else {
-        person.damageHP -= count;
+        this.damageHP -= count;
     }
-    renderHP(person);
+    const log = this === enemy ? generateLog(this, character, count, buildRenderHPText(this)) : generateLog(this, enemy, count, buildRenderHPText(this));
+    console.log(log);
+    logs.push(log);
+    createLogFighting(blockLogs, log);
+    renderHP(this);
 }
 
 function random(num) {

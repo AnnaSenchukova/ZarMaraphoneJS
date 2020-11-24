@@ -49,15 +49,27 @@ buttonPunch.addEventListener('click', function () {
 });*/
 
 function changeHit(buttonsArray) {
+
+    function kickCounter(kick = 0) {
+        return function(buttonName) {
+            kick++;
+            console.log(`Button ${buttonName} has been clicked ${kick} times`);
+        }
+    }
+
     for (let i = 0; i < buttonsArray.length; i++) {
         let button = buttonsArray[i];
 
-        button.element.addEventListener('click', function () {
+        const counterFunction = kickCounter();
+
+        button.element.addEventListener('click', function (event) {
                 console.log(button.name);
 
                 clearLogs(blockLogs);
                 character.changeHP(random(button.damage));
                 enemy.changeHP(random(button.damage));
+
+                counterFunction(button.name);
         });
     }
 }

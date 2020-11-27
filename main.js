@@ -1,6 +1,6 @@
 import Pokemon from "./pokemon.js";
 import random from "./utilsRandom.js";
-import {generateLog, clearLogs, createLogFighting} from "./logs.js";
+import {generateLog, clearLogs, createLogFighting, logs} from "./logs.js";
 
 const  player1 = new Pokemon({
     name: 'Pikachu',
@@ -24,7 +24,31 @@ const buttonKick = document.getElementById('btn-kick');
 const buttonPunch = document.getElementById('btn-punch');
 const blockLogs = document.querySelector('#logs');
 
-const logs = [];
+
+const logCallback = (count, player) => {
+
+    debugger;
+
+    console.log(player.name);
+
+    //const log = this === enemy ? generateLog(this, character, count, buildRenderHPText(this)) : generateLog(this, enemy, count, buildRenderHPText(this));
+    //const log = Pokemon.selectors === enemy ? generateLog(player1, player2, count, count) : generateLog(player1, player2, count, count);
+
+    let log;
+    if (player === player1) {
+        log = generateLog(player, player2, count, count);
+    } else {
+        log = generateLog(player, player1, count, count);
+    }
+
+    console.log(log);
+    logs.push(log);
+    createLogFighting(blockLogs, log);
+
+    //-console.log(generateLog(player1, player2, count, count));
+};
+
+
 
 let buttonsArray = [
     {
@@ -108,16 +132,8 @@ function changeHit(buttonsArray) {
 
                 clearLogs(blockLogs);
                 clearLogs(button.element);
-                player1.changeHP(random(button.damage),  (count) => {
-
-                    const log = this === enemy ? generateLog(this, character, count, buildRenderHPText(this)) : generateLog(this, enemy, count, buildRenderHPText(this));
-                    console.log(log);
-                    logs.push(log);
-                    createLogFighting(blockLogs, log);
-
-                    console.log(generateLog(player1, player2, count));
-                });
-                player2.changeHP(random(button.damage));
+                player1.changeHP(random(button.damage),  logCallback);
+                player2.changeHP(random(button.damage), logCallback);
                 /*character.changeHP(random(button.damage));*/
                 // enemy.changeHP(random(button.damage));
 

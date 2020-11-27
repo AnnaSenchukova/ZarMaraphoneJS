@@ -30,7 +30,7 @@ class Pokemon extends Selectors {
 
         this.renderHP();
 
-        callback && callback(count);
+        callback && callback(count, this);
     };
 
 

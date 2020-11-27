@@ -1,4 +1,5 @@
 import random from "./utilsRandom.js";
+export const logs = [];
 
 export function generateLog (firstPerson, secondPerson, damage, HPResult) {
     const phrases = [
@@ -14,7 +15,7 @@ export function generateLog (firstPerson, secondPerson, damage, HPResult) {
         `${firstPerson.name}  пытался что-то сказать, но вдруг, неожиданно ${secondPerson.name} со скуки, разбил бровь сопернику. Урон -${damage}, [${HPResult}]`
     ];
 
-    return phrases[random(logs.length) - 1];
+    return phrases[random(phrases.length) - 1];
 }
 
 export function clearLogs(htmlBlock) {

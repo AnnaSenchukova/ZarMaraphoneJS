@@ -73,14 +73,15 @@ function renderEnemy() {
 }
 
 function startGame() {
-    this.player2 = renderEnemy();
+    renderEnemy();
 }
 
 function resetGame() {
-    this.player1 = renderCharacter();
-    this.player2 = renderEnemy();
+    renderCharacter();
+    renderEnemy();
 }
 
+resetGame();
 const logCallback = (count, player) => {
     let log;
     if (player === player1) {

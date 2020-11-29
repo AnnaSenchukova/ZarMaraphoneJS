@@ -1,5 +1,6 @@
 import random from "./utilsRandom.js";
 export const logs = [];
+export const blockLogs = document.querySelector('#logs');
 
 export function generateLog (firstPerson, secondPerson, damage, HPResult) {
     const phrases = [
@@ -29,3 +30,5 @@ export function createLogFighting(htmlBlock, log) {
     logEntry.innerText = log;
     htmlBlock.insertBefore(logEntry, htmlBlock.children[0]);
 }
+
+

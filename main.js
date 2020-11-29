@@ -3,24 +3,83 @@ import random from "./utilsRandom.js";
 import {generateLog, clearLogs, createLogFighting, logs, blockLogs} from "./logs.js";
 import {pokemons} from "./pokemons.js";
 
-const pikachu = pokemons.find(item => item.name === 'Pikachu');
-console.log(pikachu);
+/*class Game {
+    constructor({}) {
+        startGame: renderPokemon();
+    }
+}*/
 
-const  player1 = new Pokemon({
-    ...pikachu,
+function randomPokemon() {
+    return random(pokemons.length - 1);
+}
+
+const characterI = randomPokemon();
+const enemyI = randomPokemon();
+
+const character = pokemons[characterI];
+const enemy = pokemons[enemyI];
+
+let player1 = new Pokemon({
+    ...character,
     selectors: 'player1',
 });
 
 console.log(player1);
 
-const  player2 = new Pokemon({
-    name: 'Charmander',
-    type: 'fire',
-    hp: 450,
+let player2 = new Pokemon({
+    ...enemy,
     selectors: 'player2',
 });
 
+//todo - refactor renderCharacter() and renderEnemy() - code duplication
+function renderCharacter() {
+    const characterI = randomPokemon();
+    const character = pokemons[characterI];
 
+    let player1 = new Pokemon({
+        ...character,
+        selectors: 'player1',
+    });
+
+    const characterHtml = document.querySelector('.player1');
+    const characterNameHtml = document.querySelector('#name-player1');
+    clearLogs(characterNameHtml);
+    characterNameHtml.innerHTML = character.name;
+
+    const characterImgHtml = characterHtml.querySelector('.sprite');
+    characterImgHtml.src = character.img;
+
+    return player1;
+}
+
+function renderEnemy() {
+    const enemyI = randomPokemon();
+    const enemy = pokemons[enemyI];
+
+    let player2 = new Pokemon({
+        ...enemy,
+        selectors: 'player2',
+    });
+
+    const enemyHtml = document.querySelector('.player2');
+    const enemyNameHtml = document.querySelector('#name-player2');
+    clearLogs(enemyNameHtml);
+    enemyNameHtml.innerHTML = enemy.name;
+
+    const enemyImgHtml = enemyHtml.querySelector('.sprite');
+    enemyImgHtml.src = enemy.img;
+
+    return player2;
+}
+
+function startGame() {
+    this.player2 = renderEnemy();
+}
+
+function resetGame() {
+    this.player1 = renderCharacter();
+    this.player2 = renderEnemy();
+}
 
 const logCallback = (count, player) => {
     let log;
@@ -35,51 +94,53 @@ const logCallback = (count, player) => {
     createLogFighting(blockLogs, log);
 };
 
-
-
-    const control = document.querySelector('.control');
-
-    function kickCounter(kick, htmlBlock, button) {
-        function createLogKick(htmlBlock) {
-            clearLogs(htmlBlock);
-            const logKick = htmlBlock.innerText;
-            htmlBlock.innerText = `${button.name} ${logKick} (${kick})`;
-        }
-
-        createLogKick(htmlBlock);
-
-        return function () {
-            console.log();
-            kick--;
-            createLogKick(htmlBlock);
-            if (kick === 0) {
-                htmlBlock.disabled = true;
-                console.log(`Button ${htmlBlock} has been disabled`);
-            }
-            //-console.log(`Button ${button.name} has been clicked ${kick} times`);
-            return kick;
-        }
-
+function kickCounter(kick, htmlBlock, button) {
+    function createLogKick(htmlBlock) {
+        clearLogs(htmlBlock);
+        const logKick = htmlBlock.innerText;
+        htmlBlock.innerText = `${button.name} ${logKick} (${kick})`;
     }
 
-    player1.attacks.forEach(item => {
-        console.log(item);
+    createLogKick(htmlBlock);
 
-        const buttonHtml = document.createElement('button');
-        buttonHtml.classList.add('button');
-        buttonHtml.innerText = item.name;
-        const counterFunction = kickCounter(item.maxCount, buttonHtml, item);
+    return function () {
+        console.log();
+        kick--;
+        createLogKick(htmlBlock);
+        if (kick === 0) {
+            htmlBlock.disabled = true;
+            console.log(`Button ${htmlBlock} has been disabled`);
+        }
+        //-console.log(`Button ${button.name} has been clicked ${kick} times`);
+        return kick;
+    }
 
-        buttonHtml.addEventListener('click', () => {
-            console.log('Click ', buttonHtml.innerText);
-            clearLogs(blockLogs);
-
-            player1.changeHP(random(item.maxDamage), logCallback);
-            player2.changeHP(random(item.maxDamage), logCallback);
-            counterFunction();
-        });
+}
 
 
-        control.appendChild(buttonHtml);
+const control = document.querySelector('.control');
+
+const createAttackButton = item => {
+
+    console.log(item);
+
+    const buttonHtml = document.createElement('button');
+    buttonHtml.classList.add('button');
+    buttonHtml.innerText = item.name;
+    const counterFunction = kickCounter(item.maxCount, buttonHtml, item);
+
+    buttonHtml.addEventListener('click', () => {
+        console.log('Click ', buttonHtml.innerText);
+        clearLogs(blockLogs);
+
+        player1.changeHP(random(item.maxDamage), logCallback);
+        player2.changeHP(random(item.maxDamage), logCallback);
+        counterFunction();
     });
+
+
+    control.appendChild(buttonHtml);
+};
+
+player1.attacks.forEach(createAttackButton);
 

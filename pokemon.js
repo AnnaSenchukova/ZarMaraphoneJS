@@ -20,7 +20,7 @@ class Pokemon extends Selectors {
         this.renderHP();
     }
 
-    changeHP = (count, callback) => {
+    changeHP = (count, enemy, callback) => {
 
         if(this.hp.current < count) {
             this.hp.current = 0;
@@ -31,7 +31,7 @@ class Pokemon extends Selectors {
 
         this.renderHP();
 
-        callback && callback(count, this);
+        callback && callback(count, this, enemy);
     };
 
 

@@ -3,99 +3,102 @@ import random from "./utilsRandom.js";
 import {generateLog, clearLogs, createLogFighting, logs, blockLogs} from "./logs.js";
 import {pokemons} from "./pokemons.js";
 
-/*class Game {
-    constructor({}) {
-        startGame: renderPokemon();
+class Game {
+
+    player1;
+    player2;
+
+    constructor() {
+
+        this.player1 = new Pokemon({
+            ...randomPokemon(),
+            selectors: 'player1',
+        });
+
+        this.player2 = new Pokemon({
+            ...randomPokemon(),
+            selectors: 'player2',
+        });
     }
-}*/
+
+    startGame(){
+        this.player1 = renderPlayer('player1');
+        this.player2 = renderPlayer('player2');
+
+        this.player1.attacks.forEach((pokemonAttack) => {
+            createAttackButton(pokemonAttack, this.player1, this.player2);
+        });
+    }
+
+    resetGame(){
+        this.player2 = renderPlayer('player2');
+    }
+
+}
 
 function randomPokemon() {
-    return random(pokemons.length - 1);
+    return pokemons[random(pokemons.length - 1)];
 }
 
-const characterI = randomPokemon();
-const enemyI = randomPokemon();
+function createAttackButton(pokemonAttack, player, enemy) {
 
-const character = pokemons[characterI];
-const enemy = pokemons[enemyI];
+    console.log(pokemonAttack);
 
-let player1 = new Pokemon({
-    ...character,
-    selectors: 'player1',
-});
+    const buttonHtml = document.createElement('button');
 
-console.log(player1);
+    buttonHtml.classList.add('button');
+    buttonHtml.innerText = pokemonAttack.name;
 
-let player2 = new Pokemon({
-    ...enemy,
-    selectors: 'player2',
-});
+    const kickCounter = createKickCounter(pokemonAttack.maxCount, buttonHtml, pokemonAttack);
+
+    const handleAttackButtonClick = () => {
+        clearLogs(blockLogs);
+
+        player.changeHP(random(pokemonAttack.maxDamage), enemy, logCallback);
+        enemy.changeHP(random(pokemonAttack.maxDamage), player, logCallback);
+
+        kickCounter();
+    };
+
+    buttonHtml.addEventListener('click', handleAttackButtonClick);
+
+    control.appendChild(buttonHtml);
+};
+
+
+
 
 //todo - refactor renderCharacter() and renderEnemy() - code duplication
-function renderCharacter() {
-    const characterI = randomPokemon();
-    const character = pokemons[characterI];
+function renderPlayer(selectors) {
 
-    let player1 = new Pokemon({
-        ...character,
-        selectors: 'player1',
+    const pokemon = randomPokemon();
+    let player = new Pokemon({
+        ...pokemon,
+        selectors,
     });
 
-    const characterHtml = document.querySelector('.player1');
-    const characterNameHtml = document.querySelector('#name-player1');
-    clearLogs(characterNameHtml);
-    characterNameHtml.innerHTML = character.name;
+    const pokemonHtml = document.querySelector(`.${selectors}`);
+    const pokemonNameHtml = document.querySelector(`#name-${selectors}`);
+    clearLogs(pokemonNameHtml);
+    pokemonNameHtml.innerHTML = pokemon.name;
 
-    const characterImgHtml = characterHtml.querySelector('.sprite');
-    characterImgHtml.src = character.img;
+    const pokemonImgHtml = pokemonHtml.querySelector('.sprite');
+    pokemonImgHtml.src = pokemon.img;
 
-    return player1;
+    return player;
 }
 
-function renderEnemy() {
-    const enemyI = randomPokemon();
-    const enemy = pokemons[enemyI];
+const logCallback = (count, player, enemy) => {
 
-    let player2 = new Pokemon({
-        ...enemy,
-        selectors: 'player2',
-    });
-
-    const enemyHtml = document.querySelector('.player2');
-    const enemyNameHtml = document.querySelector('#name-player2');
-    clearLogs(enemyNameHtml);
-    enemyNameHtml.innerHTML = enemy.name;
-
-    const enemyImgHtml = enemyHtml.querySelector('.sprite');
-    enemyImgHtml.src = enemy.img;
-
-    return player2;
-}
-
-function startGame() {
-    renderEnemy();
-}
-
-function resetGame() {
-    renderCharacter();
-    renderEnemy();
-}
-
-resetGame();
-const logCallback = (count, player) => {
-    let log;
-    if (player === player1) {
-        log = generateLog(player, player2, count, player.buildRenderHPText());
-    } else {
-        log = generateLog(player, player1, count, player.buildRenderHPText());
-    }
+    let log = generateLog(player, enemy, count, player.buildRenderHPText());
 
     console.log(log);
     logs.push(log);
     createLogFighting(blockLogs, log);
 };
 
-function kickCounter(kick, htmlBlock, button) {
+function createKickCounter(kick, htmlBlock, button) {
+
     function createLogKick(htmlBlock) {
         clearLogs(htmlBlock);
         const logKick = htmlBlock.innerText;
@@ -121,27 +124,5 @@ function kickCounter(kick, htmlBlock, button) {
 
 const control = document.querySelector('.control');
 
-const createAttackButton = item => {
-
-    console.log(item);
-
-    const buttonHtml = document.createElement('button');
-    buttonHtml.classList.add('button');
-    buttonHtml.innerText = item.name;
-    const counterFunction = kickCounter(item.maxCount, buttonHtml, item);
-
-    buttonHtml.addEventListener('click', () => {
-        console.log('Click ', buttonHtml.innerText);
-        clearLogs(blockLogs);
-
-        player1.changeHP(random(item.maxDamage), logCallback);
-        player2.changeHP(random(item.maxDamage), logCallback);
-        counterFunction();
-    });
-
-
-    control.appendChild(buttonHtml);
-};
-
-player1.attacks.forEach(createAttackButton);
-
+const game = new Game();
+game.startGame();

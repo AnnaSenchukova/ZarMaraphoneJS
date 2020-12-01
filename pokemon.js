@@ -6,7 +6,7 @@ class Selectors {
 }
 
 class Pokemon extends Selectors {
-    constructor({name, hp, type, selectors}) {
+    constructor({name, hp, type, selectors, attacks = []}) {
         super(selectors);
 
         this.name = name;
@@ -15,11 +15,12 @@ class Pokemon extends Selectors {
             total: hp,
         };
         this.type = type;
+        this.attacks = attacks;
 
         this.renderHP();
     }
 
-    changeHP = (count, callback) => {
+    changeHP = (count, enemy, callback) => {
 
         if(this.hp.current < count) {
             this.hp.current = 0;
@@ -30,7 +31,7 @@ class Pokemon extends Selectors {
 
         this.renderHP();
 
-        callback && callback(count, this);
+        callback && callback(count, this, enemy);
     };
 
 

@@ -3,7 +3,6 @@ import random from "./utilsRandom.js";
 import {generateLog, clearLogs, createLogFighting, logs, blockLogs} from "./logs.js";
 
 class Game {
-
     player1;
     player2;
 
@@ -141,4 +140,5 @@ function countGamesPointer(player, enemy) {
 const control = document.querySelector('.control');
 
 const game = new Game();
+console.log('new Game');
 game.startGame();

@@ -53,4 +53,6 @@ class Pokemon extends Selectors {
     };
 }
 
+
+
 export default Pokemon;

@@ -46,6 +46,9 @@ class Game {
     }
 
 
+
+
+
 }
 
 async function fetchPokemons() {
@@ -69,6 +72,8 @@ function createAttackButton(pokemonAttack, player, enemy) {
 
         player.changeHP(random(pokemonAttack.maxDamage), enemy, logCallback);
         enemy.changeHP(random(pokemonAttack.maxDamage), player, logCallback);
+
+        setTimeout(()=> {countGamesPointer(player, enemy, buttonHtml)}, 0);
 
         kickCounter();
     };
@@ -110,6 +115,27 @@ function createKickCounter(kick, htmlBlock, button) {
     }
 
 }
+
+function countGamesPointer(player, enemy) {
+    console.log(enemy);
+    const playerHP = player.hp.current;
+    const enemyHP = enemy.hp.current;
+    const allButtons = document.querySelectorAll('.control .button');
+
+    if(playerHP === 0 && enemyHP === 0){
+        alert('A draw. Fight again!');
+        allButtons.forEach(item => item.disabled = true);
+    } else if(playerHP === 0 ) {
+        alert(`Game over! ${player.name} lost. Shit happens!`);
+        allButtons.forEach(item => item.disabled = true);
+    } else if (enemyHP === 0) {
+        alert(`Mission completed! ${enemy.name} died.`);
+        allButtons.forEach(item => item.disabled = true);
+    }
+}
+
+
+
 
 
 const control = document.querySelector('.control');

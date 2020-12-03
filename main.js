@@ -1,29 +1,20 @@
 import Pokemon from "./pokemon.js";
 import random from "./utilsRandom.js";
 import {generateLog, clearLogs, createLogFighting, logs, blockLogs} from "./logs.js";
-import {pokemons} from "./pokemons.js";
 
 class Game {
 
     player1;
     player2;
 
-    constructor() {
+    pokemons;
 
-        this.player1 = new Pokemon({
-            ...randomPokemon(),
-            selectors: 'player1',
-        });
+    async startGame(){
 
-        this.player2 = new Pokemon({
-            ...randomPokemon(),
-            selectors: 'player2',
-        });
-    }
+        this.pokemons = await fetchPokemons();
 
-    startGame(){
-        this.player1 = renderPlayer('player1');
-        this.player2 = renderPlayer('player2');
+        this.player1 = this.renderPlayer('player1');
+        this.player2 = this.renderPlayer('player2');
 
         this.player1.attacks.forEach((pokemonAttack) => {
             createAttackButton(pokemonAttack, this.player1, this.player2);
@@ -31,13 +22,38 @@ class Game {
     }
 
     resetGame(){
-        this.player2 = renderPlayer('player2');
+        this.player2 = this.renderPlayer('player2');
     }
+
+    renderPlayer(selectors) {
+
+        const pokemon = this.pokemons[random(this.pokemons.length - 1)];
+
+        let player = new Pokemon({
+            ...pokemon,
+            selectors,
+        });
+
+        const pokemonHtml = document.querySelector(`.${selectors}`);
+        const pokemonNameHtml = document.querySelector(`#name-${selectors}`);
+        clearLogs(pokemonNameHtml);
+        pokemonNameHtml.innerHTML = pokemon.name;
+
+        const pokemonImgHtml = pokemonHtml.querySelector('.sprite');
+        pokemonImgHtml.src = pokemon.img;
+
+        return player;
+    }
+
+
+
+
 
 }
 
-function randomPokemon() {
-    return pokemons[random(pokemons.length - 1)];
+async function fetchPokemons() {
+    const response = await fetch('https://reactmarathon-api.netlify.app/api/pokemons');
+    return await response.json();
 }
 
 function createAttackButton(pokemonAttack, player, enemy) {
@@ -57,6 +73,8 @@ function createAttackButton(pokemonAttack, player, enemy) {
         player.changeHP(random(pokemonAttack.maxDamage), enemy, logCallback);
         enemy.changeHP(random(pokemonAttack.maxDamage), player, logCallback);
 
+        setTimeout(()=> {countGamesPointer(player, enemy, buttonHtml)}, 0);
+
         kickCounter();
     };
 
@@ -64,29 +82,6 @@ function createAttackButton(pokemonAttack, player, enemy) {
 
     control.appendChild(buttonHtml);
 };
-
-
-
-
-//todo - refactor renderCharacter() and renderEnemy() - code duplication
-function renderPlayer(selectors) {
-
-    const pokemon = randomPokemon();
-    let player = new Pokemon({
-        ...pokemon,
-        selectors,
-    });
-
-    const pokemonHtml = document.querySelector(`.${selectors}`);
-    const pokemonNameHtml = document.querySelector(`#name-${selectors}`);
-    clearLogs(pokemonNameHtml);
-    pokemonNameHtml.innerHTML = pokemon.name;
-
-    const pokemonImgHtml = pokemonHtml.querySelector('.sprite');
-    pokemonImgHtml.src = pokemon.img;
-
-    return player;
-}
 
 const logCallback = (count, player, enemy) => {
 
@@ -120,6 +115,27 @@ function createKickCounter(kick, htmlBlock, button) {
     }
 
 }
+
+function countGamesPointer(player, enemy) {
+    console.log(enemy);
+    const playerHP = player.hp.current;
+    const enemyHP = enemy.hp.current;
+    const allButtons = document.querySelectorAll('.control .button');
+
+    if(playerHP === 0 && enemyHP === 0){
+        alert('A draw. Fight again!');
+        allButtons.forEach(item => item.disabled = true);
+    } else if(playerHP === 0 ) {
+        alert(`Game over! ${player.name} lost. Shit happens!`);
+        allButtons.forEach(item => item.disabled = true);
+    } else if (enemyHP === 0) {
+        alert(`Mission completed! ${enemy.name} died.`);
+        allButtons.forEach(item => item.disabled = true);
+    }
+}
+
+
+
 
 
 const control = document.querySelector('.control');
